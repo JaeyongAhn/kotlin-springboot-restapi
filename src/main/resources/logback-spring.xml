@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="logFolder"   source="logging.directory"       defaultValue="C:\\Users\\JYAhn\\Desktop\\pf2\\logs" />
+    <springProperty scope="context" name="serviceName"   source="spring.application.name"       defaultValue="service" />
+    <springProperty scope="context" name="fileName"   source="logging.level"       defaultValue="INFO" />
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level %class \(%thread\) [%logger{36}] -- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logFolder}/${serviceName}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logFolder}/${serviceName}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d %-5level %class \(%thread\) [%logger{36}] -- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
+    <springProfile name="default | test ">
+        <root level="INFO" additivity="false">
+            <appender-ref ref="console" />
+        </root>
+    </springProfile>
+
+    <springProfile name="!(default | test)">
+        <root level="INFO" additivity="false">
+            <appender-ref ref="file" />
+        </root>
+    </springProfile>
+</configuration>

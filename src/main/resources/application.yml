@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: pf2
+  h2:
+    console:
+      enabled: true
+  datasource:
+    platform: h2
+    url: jdbc:h2:tcp://localhost/~/Desktop/pf2/testdb
+    username: sa
+    password: 1234
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
