@@ -1,4 +1,4 @@
-package com.popfunding.api.v1.user.entity
+package com.popfunding.api.v1.admin.entity
 
 import com.popfunding.api.v1.user.dto.UserDto
 import org.springframework.security.core.GrantedAuthority
@@ -7,26 +7,23 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-data class User(
+class User : UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long?,
+    var id: Long? = null
 
-    private var username: String,
+    private var username: String? = null
 
-    private var password: String,
+    private var password: String? = null
 
-    @ElementCollection(fetch = FetchType.LAZY)
-    var roles: MutableSet<String>
-
-) : UserDetails {
-
-    constructor(userDto: UserDto, roles: MutableSet<String>) : this(null, userDto.username, userDto.password, roles)
+    constructor(userDto: UserDto, password: String) {
+        username = userDto.username
+        this.password = password
+    }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return mutableSetOf(SimpleGrantedAuthority("USER"))
-        //return roles.map { role -> SimpleGrantedAuthority(role) }.toMutableSet()
+        return mutableSetOf(SimpleGrantedAuthority("ROLE_USER"))
     }
 
     override fun isEnabled(): Boolean = true
@@ -36,6 +33,10 @@ data class User(
     override fun isCredentialsNonExpired(): Boolean = true
 
     override fun getPassword(): String? = password
+
+    fun setPassword(password: String) {
+        this.password = password
+    }
 
     override fun isAccountNonExpired(): Boolean = true
 

@@ -6,6 +6,7 @@ import com.popfunding.api.v1.admin.dto.AdminDto
 import com.popfunding.api.v1.admin.dto.AdminSigninDto
 import com.popfunding.api.v1.admin.entity.Admin
 import com.popfunding.api.v1.admin.repository.AdminRepository
+import com.popfunding.api.v1.advice.CInvalidTokenException
 import com.popfunding.api.v1.advice.CUserLoginFailedException
 import com.popfunding.api.v1.advice.CUserNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,7 +40,7 @@ class AdminService : UserDetailsService {
         return true
     }
 
-    fun signin(adminSigninDto: AdminSigninDto): Boolean {
+    fun login(adminSigninDto: AdminSigninDto): Boolean {
         val admin: Admin =
             adminRepository.findFirstByUsername(adminSigninDto.username) ?: throw CUserLoginFailedException()
         if (!passwordEncoder.matches(adminSigninDto.username + adminSigninDto.password, admin.password)
@@ -52,7 +53,7 @@ class AdminService : UserDetailsService {
     fun changePassword(adminChangePasswordDto: AdminChangePasswordDto) {
         val authentication: Authentication = SecurityContextHolder.getContext().authentication
         val username: String = authentication.name
-        val admin: Admin = adminRepository.findFirstByUsername(username) ?: throw CUserLoginFailedException()
+        val admin: Admin = adminRepository.findFirstByUsername(username) ?: throw CInvalidTokenException()
         if (!passwordEncoder.matches(
                 admin.username + adminChangePasswordDto.password,
                 admin.password

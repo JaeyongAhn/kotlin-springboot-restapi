@@ -1,6 +1,5 @@
 package com.popfunding.api.config.security
 
-import com.popfunding.api.v1.user.service.UserDetailsServiceImpl
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws
 import io.jsonwebtoken.Jwts
@@ -16,6 +15,7 @@ import javax.crypto.SecretKey
 import javax.servlet.http.HttpServletRequest
 import com.popfunding.api.config.logger
 import com.popfunding.api.v1.admin.service.AdminService
+import com.popfunding.api.v1.user.service.UserService
 
 @Component
 class JwtTokenProvider {
@@ -26,7 +26,7 @@ class JwtTokenProvider {
     private val tokenValidMilisecond = 1000L * 60 * 60 * 24
 
     @Autowired
-    lateinit var userDetailsService: UserDetailsServiceImpl
+    lateinit var userService: UserService
 
     @Autowired
     lateinit var adminService: AdminService
@@ -47,7 +47,7 @@ class JwtTokenProvider {
         val userDetails: UserDetails = if (getRole(token) == "ADMIN") {
             adminService.loadUserByUsername(getUsername(token))
         } else {
-            userDetailsService.loadUserByUsername(getUsername(token))
+            userService.loadUserByUsername(getUsername(token))
         }
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }

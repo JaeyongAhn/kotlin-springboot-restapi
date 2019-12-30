@@ -1,19 +1,32 @@
 package com.popfunding.api.v1.user.controller
 
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ResponseBody
-import org.springframework.web.bind.annotation.RestController
 import com.popfunding.api.config.logger
+import com.popfunding.api.v1.advice.CValidationException
+import com.popfunding.api.v1.response.JsonResponse
+import com.popfunding.api.v1.user.dto.UserDto
+import com.popfunding.api.v1.user.service.UserService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.validation.BindingResult
+import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
+@RequestMapping("/api/v1/user")
 class UserController {
     val logger = logger()
 
-    @GetMapping("/user/create")
+    @Autowired
+    lateinit var userService: UserService
+
+    @PostMapping("/signup")
     @ResponseBody
-    fun userCreate(): String{
-        logger.info("user create called")
-        Thread.sleep(20000)
-        return "hi"
+    fun signup(@RequestBody @Valid userDto: UserDto, bindingResult: BindingResult): JsonResponse {
+        if (bindingResult.hasErrors()) {
+            throw CValidationException(bindingResult.allErrors)
+        }
+
+        userService.signup(userDto)
+
+        return JsonResponse(0, userDto.username)
     }
 }

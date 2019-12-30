@@ -1,7 +1,7 @@
 package com.popfunding.api.v1.response
 
-data class JsonDataResult<T>(
+data class JsonListResponse<T>(
     val status: Int,
     val message: String,
-    val data: T
+    val list: List<T>
 )
