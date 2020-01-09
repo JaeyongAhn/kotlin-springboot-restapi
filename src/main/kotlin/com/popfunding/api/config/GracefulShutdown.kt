@@ -6,7 +6,6 @@ import org.springframework.context.ApplicationListener
 import org.springframework.context.event.ContextClosedEvent
 import java.util.concurrent.Executor
 import java.util.concurrent.ThreadPoolExecutor
-import com.popfunding.api.config.logger
 import java.util.concurrent.TimeUnit
 
 const val TIMEOUT: Long = 3 * 60

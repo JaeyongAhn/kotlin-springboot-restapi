@@ -4,12 +4,17 @@ import com.popfunding.api.config.MessageLoader
 import com.popfunding.api.config.security.JwtTokenProvider
 import com.popfunding.api.v1.admin.dto.AdminChangePasswordDto
 import com.popfunding.api.v1.admin.dto.AdminDto
+import com.popfunding.api.v1.admin.dto.AdminSearchDto
 import com.popfunding.api.v1.admin.dto.AdminSigninDto
 import com.popfunding.api.v1.admin.service.AdminService
 import com.popfunding.api.v1.advice.CValidationException
 import com.popfunding.api.v1.response.JsonDataResponse
 import com.popfunding.api.v1.response.JsonResponse
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
+import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.*
 import javax.validation.Valid
@@ -38,7 +43,7 @@ class AdminController {
         return JsonResponse(0, messageLoader.getMessage("success.msg"))
     }
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     @ResponseBody
     fun login(@RequestBody @Valid adminSigninDto: AdminSigninDto, bindingResult: BindingResult): JsonDataResponse<String> {
         if (bindingResult.hasErrors()) {
@@ -60,5 +65,16 @@ class AdminController {
         adminService.changePassword(adminChangePasswordDto)
 
         return JsonResponse(0, adminChangePasswordDto.password)
+    }
+
+    @GetMapping("/page")
+    fun page(
+        @PageableDefault(
+            size = 10,
+            sort = arrayOf("username"),
+            direction = Sort.Direction.DESC
+        ) pageable: Pageable, searchDto: AdminSearchDto
+    ): ResponseEntity {
+
     }
 }
